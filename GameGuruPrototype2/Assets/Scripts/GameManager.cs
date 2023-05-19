@@ -14,12 +14,6 @@ public class GameManager : MonoSingleton<GameManager>
     }
     internal void StartGame()
     {
-        PlayerMovement.Instance.StartHandlePlayer();
         PlayerMovement.Instance.StartMove();
-    }
-    public void FinishGame()
-    {
-        UIManager.Instance.ShowPanel(PanelType.Win);
-        //player.GetComponent<PlayerMovement>().DisableControl();
     }
 }
