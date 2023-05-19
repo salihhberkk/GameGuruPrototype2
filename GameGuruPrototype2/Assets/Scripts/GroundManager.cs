@@ -6,18 +6,28 @@ using DG.Tweening;
 public class GroundManager : MonoSingleton<GroundManager>
 {
     [SerializeField] private int startGroundCount = 2;
+    [SerializeField] [Range(0f, 1f)] private float tolerance = 0.2f;
     [SerializeField] private PoolInfoWithPool groundPool;
 
     private GameObject ground;
     private List<Ground> grounds = new();
     private bool gameStart = false;
-    private int groundCount = 0;
+    private PieceController PieceController;
     private void Start()
     {
-        for (int i = 0; i < startGroundCount + 1; i++)
+        PieceController = PieceController.Instance;
+
+        for (int i = 0; i < startGroundCount; i++)
         {
-            CreateCube();
+            ground = groundPool.Fetch();
+            ground.transform.position = Helper.Help(0f, -0.25f, grounds.Count * ground.transform.localScale.z);
+            ground.SetActive(true);
+
+            grounds.Add(ground.GetComponent<Ground>());
         }
+        PieceController.SetReferenceObject(grounds[grounds.Count - 1].gameObject);
+
+        CreateCube();
     }
 
     public void OpenInput()
@@ -31,23 +41,47 @@ public class GroundManager : MonoSingleton<GroundManager>
         if (Input.GetMouseButtonDown(0))
         {
             grounds[grounds.Count - 1].StopMove();
+            //grounds[grounds.Count - 1].GetComponent<PoolObject>().Release();
+            grounds[grounds.Count - 1].gameObject.SetActive(false);
+
+            var distance = grounds[grounds.Count - 2].transform.position.x - grounds[grounds.Count - 1].transform.position.x;
+
+            if (Mathf.Abs(distance) >= grounds[grounds.Count - 1].transform.localScale.x)
+            {
+                Debug.Log("game over");
+                return;
+            }
+            if (Mathf.Abs(distance) < tolerance)// tolerans
+            {
+                PieceController.DivideObject(0f);
+            }
+            else
+                PieceController.DivideObject(distance * -1);
+
+            grounds.RemoveAt(grounds.Count - 2);
             CreateCube();
         }
+    }
+    public void SetReferenceObject()
+    {
+        PieceController.Instance.SetReferenceObject(grounds[grounds.Count - 1].gameObject);
+    }
+    public void AddDivideObject(GameObject newObject)
+    {
+        grounds.Add(newObject.GetComponent<Ground>());
     }
     public void CreateCube()
     {
         ground = groundPool.Fetch();
-        if (groundCount >= startGroundCount)
-        {
-            ground.transform.position = Helper.Help(3.5f, -0.25f, groundCount * 4f);
-            ground.GetComponent<Ground>().StartMove();
-        }
-        else
-        {
-            ground.transform.position = Helper.Help(0f, -0.25f, groundCount * 4f);
-        }
+
+        ground.transform.localScale = Helper.Help(grounds[grounds.Count - 1].gameObject.transform.localScale.x
+            , grounds[grounds.Count - 1].gameObject.transform.localScale.y
+                , grounds[grounds.Count - 1].gameObject.transform.localScale.z);
+
+        ground.transform.position = Helper.Help(ground.transform.localScale.x + 0.5f, -0.25f, grounds.Count * ground.transform.localScale.z);
         ground.SetActive(true);
+        ground.GetComponent<Ground>().StartMove();
+
         grounds.Add(ground.GetComponent<Ground>());
-        groundCount++;
     }
 }
