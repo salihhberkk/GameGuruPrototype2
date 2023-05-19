@@ -19,6 +19,7 @@ public class WinPanel : Panel
 
     public void Continue()
     {
-        UIManager.Instance.LoadNextLevel();
+        GameManager.Instance.RestartGame();
+        //UIManager.Instance.LoadNextLevel();
     }
 }

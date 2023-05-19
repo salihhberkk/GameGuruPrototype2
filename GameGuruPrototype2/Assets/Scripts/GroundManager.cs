@@ -6,17 +6,26 @@ using DG.Tweening;
 public class GroundManager : MonoSingleton<GroundManager>
 {
     [SerializeField] private int startGroundCount = 2;
+    [SerializeField] private int totalGroundCount = 10;
     [SerializeField] [Range(0f, 1f)] private float tolerance = 0.2f;
     [SerializeField] private PoolInfoWithPool groundPool;
+    [SerializeField] private PoolInfoWithPool finishGroundPool;
 
     private GameObject ground;
+    private GameObject finishGround;
     private List<Ground> grounds = new();
     private bool gameStart = false;
     private PieceController PieceController;
+    public int spawnGroundCounter = 0;
+    private int levelCount = 1;
     private void Start()
     {
         PieceController = PieceController.Instance;
 
+        StartNewGrounds();
+    }
+    public void StartNewGrounds()
+    {
         for (int i = 0; i < startGroundCount; i++)
         {
             ground = groundPool.Fetch();
@@ -28,11 +37,29 @@ public class GroundManager : MonoSingleton<GroundManager>
         PieceController.SetReferenceObject(grounds[grounds.Count - 1].gameObject);
 
         CreateCube();
-    }
 
+        finishGround = finishGroundPool.Fetch();
+        finishGround.transform.position = Helper.Help(0f, -0.25f, levelCount * (totalGroundCount) * ground.transform.localScale.z);
+        finishGround.SetActive(true);
+    }
+    public void OpenInputAgain()
+    {
+        levelCount++;
+        StartNewGrounds();
+        OpenInput();
+        ResetCounter();
+    }
+    public void ResetCounter()
+    {
+        spawnGroundCounter = 0;
+    }
     public void OpenInput()
     {
         gameStart = true;
+    }
+    public void CloseInput()
+    {
+        gameStart = false;
     }
     private void Update()
     {
@@ -41,7 +68,6 @@ public class GroundManager : MonoSingleton<GroundManager>
         if (Input.GetMouseButtonDown(0))
         {
             grounds[grounds.Count - 1].StopMove();
-            //grounds[grounds.Count - 1].GetComponent<PoolObject>().Release();
             grounds[grounds.Count - 1].gameObject.SetActive(false);
 
             var distance = grounds[grounds.Count - 2].transform.position.x - grounds[grounds.Count - 1].transform.position.x;
@@ -59,16 +85,19 @@ public class GroundManager : MonoSingleton<GroundManager>
                 PieceController.DivideObject(distance * -1);
 
             grounds.RemoveAt(grounds.Count - 2);
+            if (spawnGroundCounter >= totalGroundCount) // toplam ground sayýsýna ulaþýldý
+            {
+                gameStart = false;
+                return;
+            }
             CreateCube();
+
         }
-    }
-    public void SetReferenceObject()
-    {
-        PieceController.Instance.SetReferenceObject(grounds[grounds.Count - 1].gameObject);
     }
     public void AddDivideObject(GameObject newObject)
     {
         grounds.Add(newObject.GetComponent<Ground>());
+        spawnGroundCounter++;
     }
     public void CreateCube()
     {
@@ -83,5 +112,6 @@ public class GroundManager : MonoSingleton<GroundManager>
         ground.GetComponent<Ground>().StartMove();
 
         grounds.Add(ground.GetComponent<Ground>());
+        spawnGroundCounter++;
     }
 }

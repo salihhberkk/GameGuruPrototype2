@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class PlayerMovement : MonoSingleton<PlayerMovement>
 {
@@ -8,7 +9,7 @@ public class PlayerMovement : MonoSingleton<PlayerMovement>
 
     private bool move = false;
     private PlayerAnimator animator;
-
+    private float targetX;
     private void Start()
     {
         animator = GetComponentInChildren<PlayerAnimator>();
@@ -22,6 +23,14 @@ public class PlayerMovement : MonoSingleton<PlayerMovement>
     {
         IsMove = false;
     }
+    public void StartDanceAnim()
+    {
+        animator.SetDanceAnim();
+    }
+    public void StartRunAnim()
+    {
+        animator.SetRunAnim();
+    }
     public bool IsMove
     {
         get => move;
@@ -30,11 +39,16 @@ public class PlayerMovement : MonoSingleton<PlayerMovement>
             move = value;
         }
     }
+    private void OnCollisionEnter(Collision collision)
+    {
+        targetX = collision.gameObject.transform.position.x;
+    }
     void Update()
     {
         if (move)
         {
             transform.Translate(speed * Time.deltaTime * Vector3.forward);
+            transform.position = Vector3.Lerp(transform.position, Helper.Help(targetX, transform.position.y, transform.position.z), Time.deltaTime * 5f);
         }
     }
 }
