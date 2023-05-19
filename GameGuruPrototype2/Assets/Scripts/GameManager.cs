@@ -15,5 +15,6 @@ public class GameManager : MonoSingleton<GameManager>
     internal void StartGame()
     {
         PlayerMovement.Instance.StartMove();
+        GroundManager.Instance.OpenInput();
     }
 }
