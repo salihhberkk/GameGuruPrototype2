@@ -55,6 +55,10 @@ public class PieceController : MonoSingleton<PieceController>
             falling.GetComponent<Rigidbody>().isKinematic = false;
             falling.GetComponent<Renderer>().material.color = GroundManager.Instance.GetLastColor();
         }
+        else
+        {
+            falling.SetActive(false);
+        }
 
         stand.SetActive(true);
         stand.GetComponent<Renderer>().material.color = GroundManager.Instance.GetLastColor();

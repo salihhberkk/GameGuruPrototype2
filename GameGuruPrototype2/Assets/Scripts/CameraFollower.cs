@@ -7,12 +7,12 @@ public class CameraFollower : MonoSingleton<CameraFollower>
 {
     [SerializeField] private GameObject player;
     [SerializeField] private float rotateTime;
+    [SerializeField] private float smoothSpeed = 0.125f;
     public Vector3 offset;
     private bool isFollow = true;
-    public Vector3 mainCamStartRotation;
-    public Vector3 mainCamStartPos;
+    private Vector3 mainCamStartRotation;
+    private Vector3 mainCamStartPos;
 
-    [SerializeField] private float smoothSpeed = 0.125f;
     private void Start()
     {
         mainCamStartRotation = Camera.main.transform.localRotation.eulerAngles;
