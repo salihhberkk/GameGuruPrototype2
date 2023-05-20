@@ -368,6 +368,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   col: {fileID: 2400425475001736301}
+  particlePool: {fileID: 11400000, guid: ba9167df4d89f3d438bc0ddcba4bd685, type: 2}
 --- !u!114 &5408427662845825192
 MonoBehaviour:
   m_ObjectHideFlags: 0
