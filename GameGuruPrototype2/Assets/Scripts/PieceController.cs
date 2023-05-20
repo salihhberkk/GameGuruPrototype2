@@ -49,11 +49,15 @@ public class PieceController : MonoSingleton<PieceController>
         standPosition.x += (standSize.x / 2f) * (!isFirtFalling ? 1 : -1);
         stand.transform.position = standPosition + Helper.Help(0, 0, falling.transform.localScale.z);
 
-        falling.SetActive(true);
-        falling.GetComponent<Rigidbody>().isKinematic = false;
+        if (value != 0)
+        {
+            falling.SetActive(true);
+            falling.GetComponent<Rigidbody>().isKinematic = false;
+            falling.GetComponent<Renderer>().material.color = GroundManager.Instance.GetLastColor();
+        }
 
         stand.SetActive(true);
-
+        stand.GetComponent<Renderer>().material.color = GroundManager.Instance.GetLastColor();
         reference = stand.transform;
         referenceMesh = stand.GetComponent<MeshRenderer>();
         GroundManager.AddDivideObject(stand);
@@ -66,11 +70,11 @@ public class PieceController : MonoSingleton<PieceController>
         switch (direction)
         {
             case Direction.Left:
-				position.x += -extents.x;
-				break;
-			case Direction.Right:
-				position.x += extents.x;
-				break;
+                position.x += -extents.x;
+                break;
+            case Direction.Right:
+                position.x += extents.x;
+                break;
         }
         return position;
     }

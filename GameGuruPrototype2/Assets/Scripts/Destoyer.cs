@@ -21,6 +21,7 @@ public class Destoyer : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             GameManager.Instance.LoseGame();
+            other.gameObject.SetActive(false);
         }
         if (other.CompareTag("Cube"))
         {

@@ -14,14 +14,15 @@ public class GroundManager : MonoSingleton<GroundManager>
     private GameObject ground;
     private GameObject finishGround;
     private List<Ground> grounds = new();
-    private bool gameStart = false;
     private PieceController PieceController;
+    private AudioPlayer audioPlayer;
+    private bool gameStart = false;
     public int spawnGroundCounter = 0;
     private int levelCount = 1;
     private void Start()
     {
         PieceController = PieceController.Instance;
-
+        audioPlayer = GetComponent<AudioPlayer>();
         StartNewGrounds();
     }
     public void StartNewGrounds()
@@ -29,25 +30,28 @@ public class GroundManager : MonoSingleton<GroundManager>
         for (int i = 0; i < startGroundCount; i++)
         {
             ground = groundPool.Fetch();
-            ground.transform.position = Helper.Help(0f, -0.25f, grounds.Count * ground.transform.localScale.z);
+            ground.transform.position = Helper.Help(0f, -0.25f, (grounds.Count * ground.transform.localScale.z) + ((levelCount - 1) * ground.transform.localScale.z));
             ground.SetActive(true);
 
             grounds.Add(ground.GetComponent<Ground>());
+            AnimateLightingInRainbow();
+            spawnGroundCounter++;
         }
         PieceController.SetReferenceObject(grounds[grounds.Count - 1].gameObject);
 
         CreateCube();
 
         finishGround = finishGroundPool.Fetch();
-        finishGround.transform.position = Helper.Help(0f, -0.25f, levelCount * (totalGroundCount) * ground.transform.localScale.z);
+        finishGround.transform.position = Helper.Help(0f, -0.25f
+            , (levelCount * (totalGroundCount) * ground.transform.localScale.z) + (levelCount - 1 == 0 ? 0 : (ground.transform.localScale.z * (levelCount - 1))));
         finishGround.SetActive(true);
     }
     public void OpenInputAgain()
     {
         levelCount++;
+        ResetCounter();
         StartNewGrounds();
         OpenInput();
-        ResetCounter();
     }
     public void ResetCounter()
     {
@@ -80,6 +84,7 @@ public class GroundManager : MonoSingleton<GroundManager>
             if (Mathf.Abs(distance) < tolerance)// tolerans
             {
                 PieceController.DivideObject(0f);
+                audioPlayer.PlayAudio();
             }
             else
                 PieceController.DivideObject(distance * -1);
@@ -97,7 +102,6 @@ public class GroundManager : MonoSingleton<GroundManager>
     public void AddDivideObject(GameObject newObject)
     {
         grounds.Add(newObject.GetComponent<Ground>());
-        spawnGroundCounter++;
     }
     public void CreateCube()
     {
@@ -107,11 +111,42 @@ public class GroundManager : MonoSingleton<GroundManager>
             , grounds[grounds.Count - 1].gameObject.transform.localScale.y
                 , grounds[grounds.Count - 1].gameObject.transform.localScale.z);
 
-        ground.transform.position = Helper.Help(ground.transform.localScale.x + 0.5f, -0.25f, grounds.Count * ground.transform.localScale.z);
+        ground.transform.position = Helper.Help(ground.transform.localScale.x + 0.5f, -0.25f, (grounds.Count * ground.transform.localScale.z) + ((levelCount - 1) * ground.transform.localScale.z));
         ground.SetActive(true);
         ground.GetComponent<Ground>().StartMove();
 
         grounds.Add(ground.GetComponent<Ground>());
         spawnGroundCounter++;
+        AnimateLightingInRainbow();
+    }
+
+    byte red = 0;
+    byte green = 0;
+    byte blue = 0;
+    byte alpha = 255;
+
+    private void AnimateLightingInRainbow()
+    {
+        if (red == 0 && green == 0 && blue == 0)
+            red = 255;
+        else if (red == 0 && green < 255 && blue == 255)
+            green += 51;
+        else if (red == 0 && green == 255 && blue > 0)
+            blue -= 51;
+        else if (red == 255 && green == 0 && blue < 255)
+            blue += 51;
+        else if (red == 255 && green > 0 && blue == 0)
+            green -= 51;
+        else if (red > 0 && green == 0 && blue == 255)
+            red -= 51;
+        else if (red < 255 && green == 255 && blue == 0)
+            red += 51;
+
+        grounds[grounds.Count - 1].GetComponent<Renderer>().material.color = new Color32(red, green, blue, alpha);
+
+    }
+    public Color GetLastColor()
+    {
+        return grounds[grounds.Count - 1].GetComponent<Renderer>().material.color;
     }
 }

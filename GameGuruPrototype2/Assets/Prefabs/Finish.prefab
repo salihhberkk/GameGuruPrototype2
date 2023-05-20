@@ -380,7 +380,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa5e662a21fd43a499dce3fba00d2064, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Org_Scale: {x: 3, y: 0.5, z: 4}
+  Org_Scale: {x: 3, y: 0.5, z: 6}
   Org_Position: {x: 0, y: 0, z: 0}
   Org_Rotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!65 &7103638672989285304

@@ -15,7 +15,7 @@ MonoBehaviour:
   PoolName: finishGround
   PoolId: 0
   Prefab: {fileID: 6231062324468897929, guid: dfdbc48dc12d83e41960ac1cc02ca493, type: 3}
-  initSize: 3
+  initSize: 1
   maxSize: 0
   ExtendModel: 2
-  poolIndex: 0
+  poolIndex: 4

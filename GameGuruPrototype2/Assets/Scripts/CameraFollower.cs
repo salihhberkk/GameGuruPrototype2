@@ -9,20 +9,25 @@ public class CameraFollower : MonoSingleton<CameraFollower>
     [SerializeField] private float rotateTime;
     public Vector3 offset;
     private bool isFollow = true;
-    private Vector3 mainCamStartRotation;
+    public Vector3 mainCamStartRotation;
+    public Vector3 mainCamStartPos;
 
     [SerializeField] private float smoothSpeed = 0.125f;
     private void Start()
     {
-        mainCamStartRotation = Camera.main.transform.rotation.eulerAngles;
-
+        mainCamStartRotation = Camera.main.transform.localRotation.eulerAngles;
+        mainCamStartPos = Camera.main.transform.localPosition;
     }
     void LateUpdate()
     {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            StopRotate();
+        }
         if (!isFollow)
             return;
         Vector3 desiredPos = player.transform.position + offset;
-        Vector3 smoothedPos = Vector3.Lerp(transform.position, desiredPos, smoothSpeed * Time.deltaTime);
+        Vector3 smoothedPos = Vector3.Lerp(transform.position, Helper.Help(desiredPos.x, transform.position.y, desiredPos.z), smoothSpeed * Time.deltaTime);
 
         transform.position = smoothedPos;
     }
@@ -34,7 +39,8 @@ public class CameraFollower : MonoSingleton<CameraFollower>
     {
         DOTween.Kill(transform);
         transform.rotation = Quaternion.Euler(Vector3.zero);
-        Camera.main.transform.rotation = Quaternion.Euler(mainCamStartRotation);
+        Camera.main.transform.localRotation = Quaternion.Euler(mainCamStartRotation);
+        Camera.main.transform.localPosition = Helper.Help(mainCamStartPos.x, mainCamStartPos.y, mainCamStartPos.z);
     }
     public void StopFollow()
     {
