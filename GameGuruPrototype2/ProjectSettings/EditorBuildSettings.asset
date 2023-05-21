@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Salih.unity
+    guid: 68cb3e6dbf29e5646b39f4bae03e623c
   m_configObjects: {}
