@@ -87,7 +87,10 @@ public class GroundManager : MonoSingleton<GroundManager>
                 audioPlayer.PlayAudio();
             }
             else
+            {
                 PieceController.DivideObject(distance * -1);
+                audioPlayer.ResetAudioFrequency();
+            }
 
             grounds.RemoveAt(grounds.Count - 2);
             if (spawnGroundCounter >= totalGroundCount) // toplam ground sayýsýna ulaþýldý
