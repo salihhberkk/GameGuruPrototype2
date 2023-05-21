@@ -49,6 +49,9 @@ public class PieceController : MonoSingleton<PieceController>
         standPosition.x += (standSize.x / 2f) * (!isFirtFalling ? 1 : -1);
         stand.transform.position = standPosition + Helper.Help(0, 0, falling.transform.localScale.z);
 
+        stand.SetActive(true);
+        stand.GetComponent<Renderer>().material.color = GroundManager.Instance.GetLastColor();
+
         if (value != 0)
         {
             falling.SetActive(true);
@@ -58,10 +61,9 @@ public class PieceController : MonoSingleton<PieceController>
         else
         {
             falling.SetActive(false);
+            stand.GetComponent<Ground>().PlayParticle();
         }
 
-        stand.SetActive(true);
-        stand.GetComponent<Renderer>().material.color = GroundManager.Instance.GetLastColor();
         reference = stand.transform;
         referenceMesh = stand.GetComponent<MeshRenderer>();
         GroundManager.AddDivideObject(stand);

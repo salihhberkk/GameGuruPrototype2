@@ -16,7 +16,7 @@ public class Finish : MonoBehaviour
     private void PlayParticle(Transform other)
     {
         var particle = particlePool.Fetch();
-        particle.transform.position = other.position;
+        particle.transform.position = other.position + Helper.Help(0, 0.5f, 0);
         particle.SetActive(true);
     }
 }

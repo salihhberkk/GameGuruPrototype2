@@ -218,6 +218,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 84ef9cc758807504ea4255139173bb57, type: 2}
   - {fileID: 11400000, guid: 4666b96beb0099648aa81dbbe545d22d, type: 2}
   - {fileID: 11400000, guid: 868fbd9208729de45b90b148ad94ba94, type: 2}
+  - {fileID: 11400000, guid: f85d3aa7df33a2746927c479b94b5193, type: 2}
   pools: []
   createOnStart: 1
   SetParentNull: 0

@@ -226,6 +226,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveTime: 2
+  particlePool: {fileID: 11400000, guid: f85d3aa7df33a2746927c479b94b5193, type: 2}
 --- !u!54 &-3712357087895203331
 Rigidbody:
   m_ObjectHideFlags: 0
